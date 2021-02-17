@@ -5,17 +5,18 @@
   Play more pinball!
 */
 
-#ifndef CROSSLINKDEBUGGER_h
-#define CROSSLINKDEBUGGER_h
+#ifndef PPUCCROSSLINKDEBUGGER_h
+#define PPUCCROSSLINKDEBUGGER_h
 
 #include <Arduino.h>
+#include "PPUCEvent.h"
 #include "PPUCEventListener.h"
 
 class PPUCCrossLinkDebugger : public PPUCEventListener {
 public:
     PPUCCrossLinkDebugger() {}
 
-    void handleEvent(char sourceId, word eventId, byte value);
+    void handleEvent(PPUCEvent* event);
 };
 
 #endif

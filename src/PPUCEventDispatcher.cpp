@@ -20,46 +20,36 @@ void PPUCEventDispatcher::addListener(PPUCEventListener* eventListener, char sou
     }
 }
 
-void PPUCEventDispatcher::dispatch(char sourceId, word eventId) {
-    dispatch(sourceId, eventId, 1);
+void PPUCEventDispatcher::dispatch(PPUCEvent* event) {
+    stackEvents[++stackCounter] = event;
 }
 
-void PPUCEventDispatcher::dispatch(char sourceId, word eventId, byte value) {
-    noInterrupts();
-    stackSourceIds[++stackCounter] = sourceId;
-    stackEventIds[stackCounter] = eventId;
-    stackValues[stackCounter] = value;
-    interrupts();
-}
-
-void PPUCEventDispatcher::callListeners(char sourceId, word eventId, byte value, bool send) {
+void PPUCEventDispatcher::callListeners(PPUCEvent* event, bool send) {
     for (byte i = 0; i <= numListeners; i++) {
-        if (sourceId == eventListenerFilters[i] || EVENT_SOURCE_ANY == eventListenerFilters[i]) {
-            eventListeners[i]->handleEvent(sourceId, eventId, value);
+        if (event->sourceId == eventListenerFilters[i] || EVENT_SOURCE_ANY == eventListenerFilters[i]) {
+            eventListeners[i]->handleEvent(event);
         }
 
         if (send) {
             byte msg[4];
 
-            msg[0] = (byte) sourceId;
-            msg[1] = highByte(eventId);
-            msg[2] = lowByte(eventId);
-            msg[3] = value;
+            msg[0] = (byte) event->sourceId;
+            msg[1] = highByte(event->eventId);
+            msg[2] = lowByte(event->eventId);
+            msg[3] = event->value;
 
             hwSerial->write(msg, 4);
         }
     }
+
+    // delete the event and free the memory
+    delete event;
 }
 
 void PPUCEventDispatcher::update() {
     while (stackCounter > 0) {
-        noInterrupts();
-        char sourceId = stackSourceIds[stackCounter];
-        word eventId = stackEventIds[stackCounter];
-        byte value = stackValues[stackCounter--];
-        interrupts();
-
-        callListeners((char) sourceId, eventId, value, crossLink);
+        PPUCEvent* event = stackEvents[stackCounter--];
+        callListeners(event, crossLink);
     }
 
     if (crossLink && hwSerial->available() > 3) {
@@ -73,7 +63,7 @@ void PPUCEventDispatcher::update() {
                     if (value != 0) {
                         byte nullByte = hwSerial->read();
                         if (nullByte == 0) {
-                            callListeners((char) sourceId, word(eventIdHighByte, eventIdLowByte), value, false);
+                            callListeners(new PPUCEvent((char) sourceId, word(eventIdHighByte, eventIdLowByte), value), false);
                         }
                     }
                 }

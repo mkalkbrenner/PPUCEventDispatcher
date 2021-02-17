@@ -8,9 +8,11 @@
 #ifndef EVENTLISTENER_h
 #define EVENTLISTENER_h
 
+#include "PPUCEvent.h"
+
 class PPUCEventListener {
 public:
-    virtual void handleEvent(char sourceId, word eventId, byte value) = 0;
+    virtual void handleEvent(PPUCEvent* event) = 0;
 };
 
 #endif
