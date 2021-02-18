@@ -5,10 +5,11 @@
   Play more pinball!
 */
 
-#ifndef EVENTDISPATCHER_h
-#define EVENTDISPATCHER_h
+#ifndef PPUCEVENTDISPATCHER_h
+#define PPUCEVENTDISPATCHER_h
 
 #include <Arduino.h>
+#include "PPUCEvent.h"
 #include "PPUCEventListener.h"
 
 #ifndef MAX_EVENT_LISTENERS
@@ -18,13 +19,6 @@
 #ifndef EVENT_STACK_SIZE
 #define EVENT_STACK_SIZE 10
 #endif
-
-#define EVENT_SOURCE_ANY 42 // "*"
-#define EVENT_SOURCE_EVENT 69 // "E", common event from different system, like VPX, DOF, PUP
-#define EVENT_SOURCE_DMD 68 // "D"
-#define EVENT_SOURCE_SWITCH 87 // "W"
-#define EVENT_SOURCE_LIGHT 76 // "L", mainly playfield inserts
-#define EVENT_SOURCE_SOLENOID 83 // "S", includes flashers
 
 class PPUCEventDispatcher {
 public:
@@ -36,17 +30,14 @@ public:
 
     void addListener(PPUCEventListener* eventListener);
 
-    void dispatch(char sourceId, word eventId);
-    void dispatch(char sourceId, word eventId, byte value);
+    void dispatch(PPUCEvent* event);
 
     void update();
 
 private:
-    void callListeners(char sourceId, word eventId, byte value, bool send);
+    void callListeners(PPUCEvent* event, bool send);
 
-    char stackSourceIds[EVENT_STACK_SIZE];
-    word stackEventIds[EVENT_STACK_SIZE];
-    byte stackValues[EVENT_STACK_SIZE];
+    PPUCEvent* stackEvents[EVENT_STACK_SIZE];
     int stackCounter = -1;
 
     PPUCEventListener* eventListeners[MAX_EVENT_LISTENERS];
