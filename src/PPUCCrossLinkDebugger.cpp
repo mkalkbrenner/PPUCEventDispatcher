@@ -5,7 +5,7 @@ void PPUCCrossLinkDebugger::handleEvent(PPUCEvent* event) {
     Serial.print("handleEvent: sourceId ");
     Serial.print(event->sourceId);
     Serial.print(", eventId ");
-    Serial.print(event->eventId);
+    Serial.print(event->eventId, DEC);
     Serial.print(", value ");
-    Serial.println(event->value);
+    Serial.println(event->value, DEC);
 }
