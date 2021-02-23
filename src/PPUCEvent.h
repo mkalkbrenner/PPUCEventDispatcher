@@ -34,8 +34,14 @@ struct PPUCEvent {
         value = v;
     }
 
-    bool operator == (const PPUCEvent& other) const {
-        return sourceId == other.sourceId && eventId == other.eventId  && value == other.value;
+    bool operator==(const PPUCEvent &other) const {
+        return this->sourceId == other.sourceId
+            && this->eventId == other.eventId
+            && this->value == other.value;
+    }
+
+    bool operator!=(const PPUCEvent &other) const {
+        return !(*this == other);
     }
 };
 

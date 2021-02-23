@@ -4,8 +4,8 @@ PPUCEventDispatcher::PPUCEventDispatcher() {
 }
 
 void PPUCEventDispatcher::setCrossLinkSerial(HardwareSerial &reference) {
-    hwSerial = &reference;
-    ((HardwareSerial*) hwSerial)->begin(115200);
+    hwSerial = (HardwareSerial*) &reference;
+    hwSerial->begin(115200);
     crossLink = true;
 }
 
@@ -31,14 +31,16 @@ void PPUCEventDispatcher::callListeners(PPUCEvent* event, bool send) {
         }
 
         if (send) {
-            byte msg[4];
+            byte msg[5];
 
-            msg[0] = (byte) event->sourceId;
-            msg[1] = highByte(event->eventId);
-            msg[2] = lowByte(event->eventId);
-            msg[3] = event->value;
+            msg[0] = (byte) 255;
+            msg[1] = (byte) event->sourceId;
+            msg[2] = highByte(event->eventId);
+            msg[3] = lowByte(event->eventId);
+            msg[4] = event->value;
+            //     = (byte) 255; stop byte added automatically by write()
 
-            hwSerial->write(msg, 4);
+            hwSerial->write(msg, 5);
         }
     }
 
@@ -52,19 +54,27 @@ void PPUCEventDispatcher::update() {
         callListeners(event, crossLink);
     }
 
-    if (crossLink && hwSerial->available() > 3) {
-        byte sourceId = hwSerial->read();
-        if (sourceId != 0) {
-            byte eventIdHighByte = hwSerial->read();
-            if (eventIdHighByte != 0) {
-                byte eventIdLowByte = hwSerial->read();
-                if (eventIdLowByte != 0) {
+    if (crossLink && hwSerial->available() > 4) {
+        byte startByte = hwSerial->read();
+        //Serial.println("startByte");
+        //Serial.println(startByte);
+        if (startByte == 255 && startByte != 0) {
+            byte sourceId = hwSerial->read();
+            //Serial.println("sourceId");
+            //Serial.println(sourceId);
+            if (sourceId != 0) {
+                word eventId = word(hwSerial->read(), hwSerial->read());
+                //Serial.println("eventId");
+                //Serial.println(eventId);
+                if (eventId != 0) {
                     byte value = hwSerial->read();
-                    if (value != 0) {
-                        byte nullByte = hwSerial->read();
-                        if (nullByte == 0) {
-                            callListeners(new PPUCEvent((char) sourceId, word(eventIdHighByte, eventIdLowByte), value), false);
-                        }
+                    //Serial.println("value");
+                    //Serial.println(value);
+                    byte stopByte = hwSerial->read();
+                    //Serial.println("stopByte");
+                    //Serial.println(stopByte);
+                    if (stopByte == 255) {
+                        callListeners(new PPUCEvent((char) sourceId, eventId, value), false);
                     }
                 }
             }

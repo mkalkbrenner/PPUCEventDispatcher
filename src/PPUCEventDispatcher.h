@@ -45,7 +45,7 @@ private:
     int numListeners = -1;
 
     bool crossLink = false;
-    Stream* hwSerial;
+    HardwareSerial* hwSerial;
 };
 
 #endif
