@@ -49,7 +49,7 @@ void PPUCEventDispatcher::callListeners(PPUCEvent* event, bool send) {
 }
 
 void PPUCEventDispatcher::update() {
-    while (stackCounter > 0) {
+    while (stackCounter >= 0) {
         PPUCEvent* event = stackEvents[stackCounter--];
         callListeners(event, crossLink);
     }
