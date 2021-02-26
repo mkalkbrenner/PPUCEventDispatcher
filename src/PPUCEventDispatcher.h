@@ -9,6 +9,7 @@
 #define PPUCEVENTDISPATCHER_h
 
 #include <Arduino.h>
+
 #include "PPUCEvent.h"
 #include "PPUCEventListener.h"
 
