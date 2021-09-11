@@ -18,7 +18,7 @@
 #endif
 
 #ifndef EVENT_STACK_SIZE
-#define EVENT_STACK_SIZE 10
+#define EVENT_STACK_SIZE 100
 #endif
 
 class PPUCEventDispatcher {

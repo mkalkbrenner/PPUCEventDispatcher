@@ -21,7 +21,13 @@ void PPUCEventDispatcher::addListener(PPUCEventListener* eventListener, char sou
 }
 
 void PPUCEventDispatcher::dispatch(PPUCEvent* event) {
-    stackEvents[++stackCounter] = event;
+    if (stackCounter < (EVENT_STACK_SIZE - 1)) {
+        stackEvents[++stackCounter] = event;
+    }
+    else {
+        // Too many events stacked, delete the event and free the memory.
+        delete event;
+    }
 }
 
 void PPUCEventDispatcher::callListeners(PPUCEvent* event, bool send) {

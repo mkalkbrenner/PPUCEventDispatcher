@@ -8,6 +8,9 @@
 #ifndef PPUCEVENT_h
 #define PPUCEVENT_h
 
+#define PLATFORM_WPC           1
+#define PLATFORM_DATA_EAST     2
+
 #define EVENT_SOURCE_ANY      42 // "*" PPUC
 #define EVENT_SOURCE_DMD      68 // "D" VPX/DOF/PUP
 #define EVENT_SOURCE_EVENT    69 // "E" VPX/DOF/PUP common event from different system, like
