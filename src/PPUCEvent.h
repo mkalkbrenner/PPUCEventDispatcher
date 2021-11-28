@@ -12,6 +12,7 @@
 #define PLATFORM_DATA_EAST     2
 
 #define EVENT_SOURCE_ANY      42 // "*" PPUC
+#define EVENT_SOURCE_DEBUG    66 // "B" PPUC Debug
 #define EVENT_SOURCE_DMD      68 // "D" VPX/DOF/PUP
 #define EVENT_SOURCE_EVENT    69 // "E" VPX/DOF/PUP common event from different system, like
 #define EVENT_SOURCE_EFFECT   70 // "F" PPUC        event from running PPUCEffect

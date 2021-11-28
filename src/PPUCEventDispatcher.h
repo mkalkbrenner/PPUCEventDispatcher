@@ -45,6 +45,8 @@ private:
     char eventListenerFilters[MAX_EVENT_LISTENERS];
     int numListeners = -1;
 
+    byte msg[6] = {0};
+
     bool crossLink = false;
     HardwareSerial* hwSerial;
 };
