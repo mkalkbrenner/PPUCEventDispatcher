@@ -17,6 +17,10 @@
 #define MAX_EVENT_LISTENERS 5
 #endif
 
+#ifndef MAX_CROSS_LINKS
+#define MAX_CROSS_LINKS 8
+#endif
+
 #ifndef EVENT_STACK_SIZE
 #define EVENT_STACK_SIZE 100
 #endif
@@ -27,6 +31,8 @@ public:
 
     void setCrossLinkSerial(HardwareSerial &reference);
 
+    void addCrossLinkSerial(HardwareSerial &reference);
+
     void addListener(PPUCEventListener* eventListener, char sourceId);
 
     void addListener(PPUCEventListener* eventListener);
@@ -36,7 +42,7 @@ public:
     void update();
 
 private:
-    void callListeners(PPUCEvent* event, bool send);
+    void callListeners(PPUCEvent* event, int sender);
 
     PPUCEvent* stackEvents[EVENT_STACK_SIZE];
     int stackCounter = -1;
@@ -47,8 +53,8 @@ private:
 
     byte msg[6] = {0};
 
-    bool crossLink = false;
-    HardwareSerial* hwSerial;
+    int crossLink = -1;
+    HardwareSerial* hwSerial[MAX_CROSS_LINKS];
 };
 
 #endif

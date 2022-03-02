@@ -10,6 +10,7 @@
 
 #define PLATFORM_WPC           1
 #define PLATFORM_DATA_EAST     2
+#define PLATFORM_SYS11         3
 
 #define EVENT_SOURCE_ANY      42 // "*" PPUC
 #define EVENT_SOURCE_DEBUG    66 // "B" PPUC Debug
